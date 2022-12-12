@@ -1,0 +1,57 @@
+variables:
+  WERF_REPO: "${SEL_REGISTRY_DOMAIN}/${SEL_REGISTRY}/${CI_PROJECT_PATH}"
+
+before_script:
+  - source $(werf ci-env gitlab --as-file)
+  - werf cr login ${SEL_REGISTRY_DOMAIN}
+
+after_script:
+  - werf cr logout ${SEL_REGISTRY_DOMAIN}
+
+stages:
+  - deploy
+  - cleanup
+
+.base_deploy:
+  stage: deploy
+  script:
+    - werf converge
+  tags: [werf]
+
+.base_clean_up:
+  stage: cleanup
+  variables:
+    WERF_PARALLEL_TASKS_LIMIT: 0
+    WERF_PARALLEL: 0
+  script:
+  - werf cleanup
+  - werf host cleanup
+  resource_group: cleanup
+  rules:
+  - if: $CI_PIPELINE_SOURCE == "schedule"
+    when: always
+  tags: [werf]
+  resource_group: cleanup
+
+Deploy to test:
+  extends: .base_deploy
+  resource_group: deploy_test
+  environment:
+    name: test
+  rules:
+  - if: $CI_PIPELINE_SOURCE == "schedule"
+    when: never
+  - when: manual
+
+Deploy to production:
+  extends: .base_deploy
+  environment:
+    name: production
+  resource_group: deploy_production
+  rules:
+  - if: $CI_PIPELINE_SOURCE == "schedule"
+    when: never
+  - when: manual
+
+Clean up:
+  extends: .base_clean_up
