@@ -2,12 +2,14 @@
 
 Это простой пример Werf Pipiline.
 
+# Как использовать
+
 Для его работы требуются следующие переменные:
-* WERF_KUBECONFIG_BASE64 - конфиг для доступа в Kubernetes.
-* SEL_REGISTRY_DOMAIN со значением cr.selcloud.ru
-* SEL_REGISTRY c именем нашей Registry – в нашем случае example
-* WERF_USERNAME со значением token
-* WERF_PASSWORD с токеном, который мы получили из админ панели Selectel для доступа к CRaaS
+* `WERF_KUBECONFIG_BASE64` - конфиг для доступа в Kubernetes;
+* `SEL_REGISTRY_DOMAIN` со значением cr.selcloud.ru;
+* `SEL_REGISTRY` c именем нашей Registry – в нашем случае example, имя выбирается при создании Registry;
+* `WERF_USERNAME` со значением token;
+* `WERF_PASSWORD` с токеном, который мы получили из админ панели Selectel для доступа к CRaaS.
 
 Так же вам потребуется Gitlab Runner с тегом `werf` и установленной утилитой `werf`. Как поставить можно прочитать на [официальном сайте](https://werf.io/installation.html).
 
