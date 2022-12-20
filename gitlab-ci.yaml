@@ -2,7 +2,9 @@ variables:
   WERF_REPO: "${SEL_REGISTRY_DOMAIN}/${SEL_REGISTRY}/${CI_PROJECT_PATH}"
 
 before_script:
-  - source $(werf ci-env gitlab --as-file)
+  - type trdl && . $(trdl use werf 1.2 ea)
+  - werf version
+  - type werf && source $(werf ci-env gitlab --as-file)
   - werf cr login ${SEL_REGISTRY_DOMAIN}
 
 after_script:
@@ -21,11 +23,9 @@ stages:
 .base_clean_up:
   stage: cleanup
   variables:
-    WERF_PARALLEL_TASKS_LIMIT: 0
     WERF_PARALLEL: 0
   script:
   - werf cleanup
-  - werf host cleanup
   resource_group: cleanup
   rules:
   - if: $CI_PIPELINE_SOURCE == "schedule"
